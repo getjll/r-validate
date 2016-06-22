@@ -118,7 +118,7 @@
                 }
 
                 //是否实时验证
-                if(option.immediately){
+                if(newValue.immediately){
                     var result = Validation.validate(value, rules);
                     resultFn(result, item);
                 }
