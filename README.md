@@ -1,0 +1,2 @@
+# validateComponent
+Regular validateComponent
