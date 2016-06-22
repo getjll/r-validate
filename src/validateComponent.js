@@ -31,7 +31,7 @@
     var clearMessageDOM = function(item){
         var elem = item.elem;
         var messageDOM = item.messageDOM;
-        item.messageDOM && e._$remove(messageDOM,false);
+        item.messageDOM && dom.remove(messageDOM);
         item.messageDOM = null;
         dom.delClass(elem,'has-error');
     };
