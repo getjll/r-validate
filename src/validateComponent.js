@@ -109,7 +109,8 @@
             var data = this.data;
             var validateList = data.validateList;
             this.$watch(option, function(newValue, oldValue){
-
+                var value = item.value = newValue.value;
+                var rules = item.rules = newValue.rules;
                 //首次不验证
                 if(oldValue === undefined){
                     validateList.push(item);
@@ -118,8 +119,6 @@
 
                 //是否实时验证
                 if(option.immediately){
-                    var value = item.value = newValue.value;
-                    var rules = item.rules = newValue.rules;
                     var result = Validation.validate(value, rules);
                     resultFn(result, item);
                 }
