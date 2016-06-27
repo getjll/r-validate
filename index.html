@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="//cdn.rawgit.com/twbs/bootstrap/master/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="//cdn.rawgit.com/regular-ui/regular-ui/master/dist/css/regular-ui.default.min.css">
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+<script src="//cdn.rawgit.com/regularjs/regular/master/dist/regular.js"></script>
+<script src="//cdn.rawgit.com/regular-ui/regular-ui/master/dist/js/regular-ui.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+<script src="./src/Validation.js"></script>
+<script src="./src/validateComponent.js"></script>
+<div id='J_from'>
+</div>
+<script id="J_from_tpl" type="text/regular">
+    <div class="example">
+        <form>
+            <div class="form-group">
+                <label for="f_username">用户名</label>
+                <input id="f_username" class="form-control"
+                        r-model={submitData.username}
+                        r-validate={{rules:'isRequired',message: '请填写用户名！', value:submitData.username}}/>
+            </div>
+            <div class="form-group">
+                <label for="f_email">邮箱</label>
+                <input id="f_email" class="form-control"
+                        r-model={submitData.email}
+                        r-validate={{rules:emailRules, value:submitData.email}}/>
+            </div>
+            <div class="form-group text-right">
+                <button class="btn btn-default" on-click={this.save($event)}>
+                    保存
+                </button>
+                <button class="btn btn-default" on-click={this.submit($event)}>
+                    提交{#if loading}中...{/if}
+                </button>
+            </div>
+        </form>
+    </div>
+</script>
+<script>
+    (function(global){
+        'use strict';
+        const Notify = RGUI.Notify;
+
+        const Ajax = function(url, data, successCallback){
+            setTimeout(function(){
+                typeof successCallback == 'function' && successCallback();
+            }, 1000);
+        };
+
+        const From = validateComponent.extend({
+            template: '#J_from_tpl',
+            config: function(){
+                var data = this.data;
+                _.extend(data, {
+                    submitData: {},
+                    emailRules:[{
+                        type: 'isRequired', message: '请填写邮箱！'
+                    },{
+                        method: function(value){
+                            return /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(value);
+                        },
+                        message: '请输入正确的邮箱！'
+                    }]
+                });
+                this.supr();
+            },
+            save: function(){
+                event && event.preventDefault();
+                if(!this.validate(true).success){
+                    return
+                }
+            },
+            submit: function(){
+                event && event.preventDefault();
+                if(!this.validate().success){
+                    return
+                }
+                var data = this.data;
+                Ajax('/submit', data.submitData, function(){
+                    data.loading = false;
+                    Notify.success('提交成功！');
+                    this.$update();
+                }.bind(this));
+            }
+        });
+        new From({}).$inject('#J_from');
+    })(this);
+</script>
+</body>
+</html>

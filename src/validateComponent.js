@@ -47,6 +47,10 @@
             messageDOM && clearMessageDOM(item);
         }
     };
+
+    var isSimpleValidate = function(option){
+        return option.rules && typeof option.rules == 'string';
+    };
     return Regular.extend({
         config: function () {
             _.extend(this.data, {
@@ -108,9 +112,23 @@
             };
             var data = this.data;
             var validateList = data.validateList;
+            var optionValue = option.get(this);
+
+            /**
+             * 支持模版 直接添加已有校验规则 即简单验证
+             * 书写方式 {type: 'isRequired', message: '必填'}
+             * 提高灵活性
+             */
+            if(isSimpleValidate(optionValue)){
+                item.rules = [{
+                    type: optionValue.rules,
+                    message: optionValue.message
+                }];
+                item.isSimple = true;
+            }
             this.$watch(option, function(newValue, oldValue){
                 var value = item.value = newValue.value;
-                var rules = item.rules = newValue.rules;
+                var rules = item.rules = item.isSimple? item.rules: newValue.rules;
                 //首次不验证
                 if(oldValue === undefined){
                     validateList.push(item);
