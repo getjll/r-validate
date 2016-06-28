@@ -139,10 +139,6 @@
     Validation.getRegisterGroupCache = function(name){
         return registerGroupValidateCache[name];
     };
-    Validation.registerGroup('isRequired&&isEmail' ,{
-        isRequired: true,
-        isEmail: true
-    });
 
     /**
      * 验证的方法

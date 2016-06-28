@@ -52,7 +52,11 @@
 
         const _ = Regular.util;
         const Notify = RGUI.Notify;
-
+        // 注册合并方法 可以在tamplate中书写
+        Validation.registerGroup('isRequired&&isEmail' ,{
+            isRequired: true,
+            isEmail: true
+        });
         const From = validateComponent.extend({
             template: '#J_from_tpl',
             config: function(){
