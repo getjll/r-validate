@@ -15,30 +15,30 @@
 <div id='J_from'>
 </div>
 <script id="J_from_tpl" type="text/regular">
-    <div class="example">
-        <form>
-            <div class="form-group">
-                <label for="f_username">用户名</label>
-                <input id="f_username" class="form-control"
-                        r-model={submitData.username}
-                        r-validate={{rules:'isRequired',message: '请填写用户名！', value:submitData.username}}/>
-            </div>
-            <div class="form-group">
-                <label for="f_email">邮箱</label>
-                <input id="f_email" class="form-control"
-                        r-model={submitData.email}
-                        r-validate={{rules: 'isRequired&&isEmail', value:submitData.email}}/>
-            </div>
-            <div class="form-group text-right">
-                <button class="btn btn-default" on-click={this.save($event)}>
-                    保存
-                </button>
-                <button class="btn btn-default" on-click={this.submit($event)}>
-                    提交{#if loading}中...{/if}
-                </button>
-            </div>
-        </form>
-    </div>
+  <div class="example">
+    <form>
+      <div class="form-group">
+        <label for="f_username">用户名</label>
+        <input id="f_username" class="form-control"
+               r-model={submitData.username}
+               r-validate={{rules:usernameRules,"value":submitData.username}}/>
+      </div>
+      <div class="form-group">
+        <label for="f_email">邮箱</label>
+        <input id="f_email" class="form-control"
+               r-model={submitData.email}
+               r-validate={{rules:emailRules,"value":submitData.email}}/>
+      </div>
+      <div class="form-group text-right">
+        <button class="btn btn-default" on-click={this.save($event)}>
+          保存
+        </button>
+        <button class="btn btn-default" on-click={this.submit($event)}>
+          提交{#if loading}中...{/if}
+        </button>
+      </div>
+    </form>
+  </div>
 </script>
 <script>
     (function(global){
@@ -59,11 +59,15 @@
                 var data = this.data;
                 _.extend(data, {
                     submitData: {},
+                    usernameRules:[{type: 'isRequired', message: '请填写用户名！'}],
                     emailRules:[{
                         type: 'isRequired', message: '请填写邮箱！'
                     },{
-                        type: 'isEmail'
-                    }]
+                        method: function(value){
+                            return /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(value);
+                        },
+                        message: '请输入正确的邮箱！'
+                    }],
                 });
                 this.supr();
             },

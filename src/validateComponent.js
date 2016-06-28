@@ -58,8 +58,12 @@
     };
 
     var setValidateItem = function(item, value){
+        var isSimple = isSimpleValidate(value);
+        if(!isSimple){
+            return;
+        }
         var rules  = getRegisterGroup(value);
-        if(!rules && isSimpleValidate(value)){
+        if(!rules){
             rules = [{
                 type: value.rules,
                 message: value.message
@@ -130,7 +134,9 @@
             var data = this.data;
             var validateList = data.validateList;
             var optionValue = option.get(this);
+
             setValidateItem(item, optionValue);
+
             this.$watch(option, function(newValue, oldValue){
                 var value = item.value = newValue.value;
                 var rules = item.rules = item.useItemRules? item.rules: newValue.rules;
