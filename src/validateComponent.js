@@ -12,6 +12,7 @@
         return
     }
     var dom = Regular.dom;
+    var _ = Regular.util;
     var createMessageDOM = function(item, message){
         var elem = item.elem;
         var messageDOM = document.createElement('span');
@@ -50,6 +51,22 @@
 
     var isSimpleValidate = function(option){
         return option.rules && typeof option.rules == 'string';
+    };
+
+    var getRegisterGroup = function(name){
+        return Validation.getRegisterGroupCache(name.rules);
+    };
+
+    var setValidateItem = function(item, value){
+        var rules  = getRegisterGroup(value);
+        if(!rules && isSimpleValidate(value)){
+            rules = [{
+                type: value.rules,
+                message: value.message
+            }];
+        }
+        item.rules = rules;
+        item.useItemRules = true;
     };
     return Regular.extend({
         config: function () {
@@ -113,22 +130,10 @@
             var data = this.data;
             var validateList = data.validateList;
             var optionValue = option.get(this);
-
-            /**
-             * 支持模版 直接添加已有校验规则 即简单验证
-             * 书写方式 {type: 'isRequired', message: '必填'}
-             * 提高灵活性
-             */
-            if(isSimpleValidate(optionValue)){
-                item.rules = [{
-                    type: optionValue.rules,
-                    message: optionValue.message
-                }];
-                item.isSimple = true;
-            }
+            setValidateItem(item, optionValue);
             this.$watch(option, function(newValue, oldValue){
                 var value = item.value = newValue.value;
-                var rules = item.rules = item.isSimple? item.rules: newValue.rules;
+                var rules = item.rules = item.useItemRules? item.rules: newValue.rules;
                 //首次不验证
                 if(oldValue === undefined){
                     validateList.push(item);
