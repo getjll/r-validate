@@ -76,7 +76,9 @@
         config: function () {
             _.extend(this.data, {
                 //需要验证的节点列表
-                validateList:[]
+                validateList:[],
+                //是否实时验证
+                immediately: true
             });
             this.supr();
 
@@ -146,8 +148,8 @@
                     return;
                 }
 
-                //是否实时验证
-                if(newValue.immediately){
+                //是否实时验证 指令优先于全局
+                if(option.immediately === true || data.immediately){
                     var result = Validation.validate(value, rules);
                     resultFn(result, item);
                 }
